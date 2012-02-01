@@ -1,71 +1,71 @@
 <project name="MasterPanelUnlocker" default="build-and-test">
 
 	<property name="src.dir"            value="${basedir}/src"/>
-    <property name="build.dir"          value="${basedir}/build"/>
-    <property name="jar.dir"            value="${basedir}/jar"/>
+	<property name="build.dir"          value="${basedir}/build"/>
+	<property name="jar.dir"            value="${basedir}/jar"/>
 	<property name="lib.dir"            value="${basedir}/lib"/>
 	<property name="test-src.dir"       value="${basedir}/test"/>
 	<property name="test-build.dir"     value="${basedir}/test-build"/>
 
-	
+
 	<path id="test.classpath">
 		<fileset dir="lib" includes="**/*.jar"/>
-	    <fileset dir="jar" includes="**/*.jar"/>
-    </path>
+		<fileset dir="jar" includes="**/*.jar"/>
+	</path>
 
 	<!-- Create directories for build output. -->
 	<target name="prepare">
-    	<mkdir dir="${build.dir}"/>
-        <mkdir dir="${jar.dir}"/>
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${jar.dir}"/>
 		<mkdir dir="${test-build.dir}"/>
 	</target>
-	
+
 	<!-- Delete the output directories. -->
 	<target name="clean">
 		<delete dir="${build.dir}" />
-        <delete dir="${jar.dir}" />
+		<delete dir="${jar.dir}" />
 		<delete dir="${test-build.dir}"/>
 	</target>
-	
-	<property name="debugFlag" value="false"/>
-    <property name="compiler.args" value="-Xlint:unchecked,deprecation"/>
-    	
-    <target name="compile" depends="prepare">
-        <javac debug="${debugFlag}" destdir="${build.dir}">
-            <compilerarg value="${compiler.args}"/>
-            <src path="${src.dir}"/>
-        </javac>
-    </target>
 
-    <target name="package" depends="compile">
-    	<delete file="${jar.dir}/${ant.project.name}.jar"/>
-    	
-        <jar jarfile="${jar.dir}/${ant.project.name}.jar">
-          <fileset dir="${build.dir}"/>
-        </jar>
+	<property name="debugFlag" value="false"/>
+	<property name="compiler.args" value="-Xlint:unchecked,deprecation"/>
+
+	<target name="compile" depends="prepare">
+		<javac debug="${debugFlag}" destdir="${build.dir}">
+			<compilerarg value="${compiler.args}"/>
+			<src path="${src.dir}"/>
+		</javac>
 	</target>
-	
+
+	<target name="package" depends="compile">
+		<delete file="${jar.dir}/${ant.project.name}.jar"/>
+
+		<jar jarfile="${jar.dir}/${ant.project.name}.jar">
+			<fileset dir="${build.dir}"/>
+		</jar>
+	</target>
+
 	<target name="compileTests" depends="package">
 		<javac debug="${debugFlag}" destdir="${test-build.dir}">
-            <compilerarg value="${compiler.args}"/>
-            <src path="${test-src.dir}"/>
+			<compilerarg value="${compiler.args}"/>
+			<src path="${test-src.dir}"/>
 			<classpath refid="test.classpath"/>
-        </javac>
+		</javac>
 	</target>
-	
+
 	<target name="packageTests" depends="compileTests">
 		<delete file="${jar.dir}/${ant.project.name}-test.jar"/>
-		    	
-        <jar jarfile="${jar.dir}/${ant.project.name}-test.jar">
-          <fileset dir="${test-build.dir}"/>
-        </jar>
+
+		<jar jarfile="${jar.dir}/${ant.project.name}-test.jar">
+			<fileset dir="${test-build.dir}"/>
+		</jar>
 	</target>
-    	
-    <target name="build-and-test" depends="package, packageTests">
-    	<junit printsummary="true" fork="true">
-            <classpath refid="test.classpath"/>
-	        <test name="project.leandog.colorcombination.UnlockerTestSuite" /> 
-        </junit>
+
+	<target name="build-and-test" depends="package, packageTests">
+		<junit printsummary="true" fork="true">
+			<classpath refid="test.classpath"/>
+			<test name="project.leandog.colorcombination.UnlockerTestSuite" />
+		</junit>
 	</target>
 
 
