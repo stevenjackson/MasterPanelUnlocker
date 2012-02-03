@@ -13,17 +13,25 @@ public class Unlocker {
 	private String result = UNLOCK_FAILED_MESSAGE;
 	private List<Chip> orderedResults = new ArrayList<Chip>();
 
-	public boolean unlock(UnlockerInput input) {
-		if(!input.isValid()) return fail();
-		
+	public void unlock(UnlockerInput input) {
 		orderedResults = new ArrayList<Chip>();
-		List<Chip> toOrder = new ArrayList<Chip>(input.chips());
+		
+		if(input.isValid()) {
+			unlockValidInput(input);
+		} else {
+			fail();
+		}
+	}
+	
+	private void unlockValidInput(UnlockerInput input){
+		//Place-holder chips to mark start and end of the pattern
 		Chip startChip = new Chip("START", input.firstColor());
 		Chip endChip = new Chip(input.lastColor(), "END");
 		
+		List<Chip> toOrder = new ArrayList<Chip>(input.chips());
 		toOrder.add(endChip);
 		
-		unlockRec(startChip, toOrder);
+		findPatternRec(startChip, toOrder);
 		
 		boolean foundPattern = isLast(endChip, orderedResults); 
 		
@@ -34,7 +42,6 @@ public class Unlocker {
 			fail();
 		}
 		
-		return foundPattern; 
 	}
 	
 	private boolean fail() {
@@ -42,7 +49,7 @@ public class Unlocker {
 		return false;
 	}
 	
-	private void unlockRec(Chip startChip, List<Chip> toOrder) {
+	private void findPatternRec(Chip startChip, List<Chip> toOrder) {
 		//Copy to working list so we can modify the passed in list
 		List<Chip> workingList = new ArrayList<Chip>(toOrder);
 		for(Chip chip : workingList){
@@ -64,7 +71,7 @@ public class Unlocker {
 	
 	private boolean completesPath(Chip nextChip, List<Chip> remainingChips){
 		orderedResults.add(nextChip);
-		unlockRec(nextChip, remainingChips);
+		findPatternRec(nextChip, remainingChips);
 		if(!remainingChips.isEmpty()){
 			orderedResults.remove(nextChip);
 		}
