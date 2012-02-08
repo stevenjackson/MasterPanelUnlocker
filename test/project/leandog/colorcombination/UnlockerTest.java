@@ -1,6 +1,7 @@
 package project.leandog.colorcombination;
 
 import static org.junit.Assert.*;
+import static project.leandog.colorcombination.UnlockerTestUtil.*;
 
 import org.junit.Test;
 
@@ -88,29 +89,5 @@ public class UnlockerTest {
 				"red", "yellow");
 		unlocker.unlock(input);
 		assertUnlockFailed(unlocker);
-	}
-	
-	private UnlockerInput buildInput(String... colors) {
-		UnlockerInput input = new UnlockerInput();
-		input.parse(buildPairs(colors));
-		return input;
-	}
-
-	private String buildPairs(String... colors) {
-		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < colors.length; i++){
-			sb.append(colors[i]);
-			//figure out separator by position
-			if(i % 2 == 0){
-				sb.append(",");
-			} else {
-				sb.append("\n");
-			}
-		}		
-		return sb.toString().trim();
-	}
-
-	private void assertUnlockFailed(Unlocker unlocker){
-		assertEquals(Unlocker.UNLOCK_FAILED_MESSAGE, unlocker.getResult());
 	}
 }

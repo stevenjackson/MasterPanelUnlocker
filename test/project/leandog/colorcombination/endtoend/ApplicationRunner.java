@@ -2,10 +2,9 @@ package project.leandog.colorcombination.endtoend;
 
 import java.awt.Color;
 
-import com.objogate.wl.swing.driver.JButtonDriver;
-
 import project.leandog.colorcombination.Unlocker;
-import project.leandog.colorcombination.UnlockerApplication;
+import project.leandog.colorcombination.ui.ChipColor;
+import project.leandog.colorcombination.ui.UnlockerApplication;
 
 public class ApplicationRunner {
 
@@ -48,4 +47,38 @@ public class ApplicationRunner {
 		}
 	}
 
+	public void addChip(int rowIndex, Color c1, Color c2) {
+		driver.addChip(rowIndex, c1, c2);
+	}
+
+	public void showsUnlockSuccess(Color... colors) {
+		driver.showsTextStatus(buildResultText(colors));
+	}
+
+	private String buildResultText(Color... colors) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < colors.length; i++){
+			sb.append(ChipColor.fromColor(colors[i]));
+			//figure out separator by position
+			if(i % 2 == 0){
+				sb.append(",");
+			} else {
+				sb.append("\n");
+			}
+		}		
+		return sb.toString().trim();
+	}
+
+	public void setEndColors(Color start, Color end) {
+		setFirstColor(start);
+		setLastColor(end);
+	}
+
+	public void addChips(Color... colors) {
+		int rowIndex = 0;
+		int colorIndex = 0;
+		while(colorIndex < colors.length){
+			addChip(rowIndex++, colors[colorIndex++], colors[colorIndex++]);
+		}
+	}
 }

@@ -1,11 +1,14 @@
 package project.leandog.colorcombination.endtoend;
 
+import static org.hamcrest.Matchers.equalTo;
+
 import java.awt.Color;
+import java.util.Arrays;
 
-import javax.swing.JButton;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
-import project.leandog.colorcombination.UnlockerApplication;
+import project.leandog.colorcombination.ui.ChipColor;
+import project.leandog.colorcombination.ui.UnlockerApplication;
 
 import com.objogate.wl.swing.AWTEventQueueProber;
 import com.objogate.wl.swing.driver.*;
@@ -25,11 +28,23 @@ public class UnlockerApplicationDriver extends JFrameDriver {
 	}
 
 	public void setFirstColor(Color c) {
-		
+		setColor(c, UnlockerApplication.FIRST_COLOR_NAME);
 	}
 
 	public void setLastColor(Color c) {
-		
+		setColor(c, UnlockerApplication.LAST_COLOR_NAME);
+	}
+	
+	private void setColor(Color c, String componentName){
+		JComboBoxDriver comboDriver = new JComboBoxDriver(this, JComboBox.class, named(componentName));
+		setColor(c, comboDriver);
+	}
+	
+	private void setColor(Color c, JComboBoxDriver comboDriver){
+		//Have to cheat and find index of color to use this driver
+		int index = Arrays.asList(ChipColor.colors()).indexOf(c);
+		comboDriver.selectItem(index);
+		comboDriver.has(backgroundColor(), equalTo(c));
 	}
 
 	public void fireUnlock() {
@@ -39,6 +54,16 @@ public class UnlockerApplicationDriver extends JFrameDriver {
 	public void showsTextStatus(String text) {
 		new JTextComponentDriver<JTextArea>(this, JTextArea.class,
 				named(UnlockerApplication.UNLOCK_RESULTS_NAME)).hasText(text);
+	}
+
+	public void addChip(int rowIndex, Color c1, Color c2) {
+		new JButtonDriver(this, JButton.class, named(UnlockerApplication.ADD_CHIP_NAME)).click();
+		
+		JTableDriver table = new JTableDriver(this, JTable.class, named(UnlockerApplication.CHIP_TABLE_NAME));
+		table.editCell(rowIndex, 0);
+		table.component().component().setValueAt(c1, rowIndex, 0);
+		table.editCell(rowIndex, 1);
+		table.component().component().setValueAt(c2, rowIndex, 1);
 	}
 
 	
