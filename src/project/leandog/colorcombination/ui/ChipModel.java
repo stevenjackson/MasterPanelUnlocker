@@ -45,4 +45,22 @@ public class ChipModel {
 	public Chip toChip() {
 		return new Chip(firstColor, secondColor);
 	}
+
+	public boolean matches(Chip chip) {
+		return toChip().matches(chip);
+	}
+
+	public void flipToMatch(Chip chip) {
+		if(!matches(chip)) return;
+		
+		if(!toChip().same(chip)) {
+			flip();
+		}	
+	}
+
+	private void flip() {
+		ChipColor temp = firstColor;
+		firstColor = secondColor;
+		secondColor = temp;
+	}
 }

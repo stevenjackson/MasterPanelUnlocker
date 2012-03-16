@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import project.leandog.colorcombination.Unlocker;
 import project.leandog.colorcombination.UnlockerInput;
@@ -22,22 +24,26 @@ public class UnlockerApplication extends JFrame {
 	public static final String UNLOCK_RESULTS_NAME = "Unlock Results";
 	public static final String ADD_CHIP_NAME = "Add Chip Button";
 	public static final String CHIP_TABLE_NAME = "Chip Table";
+	public static final String CHIP_BOARD_NAME = "Chip Board";
 	
 	private ColorComboBox firstColor;
 	private ColorComboBox lastColor;
 	private JButton unlockButton;
 	private JTextArea responseArea;
 	private ChipTable table;
+	private ChipBoard chipBoard;
+	private ChipsModel chips;
 	
 	public UnlockerApplication(){
 		super(WINDOW_NAME);
 		setName(WINDOW_NAME);
+		
+		chips = new ChipsModel();
+		
 		initLayout();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 	}
-	
-	
 	
 	private void initLayout() {
 		JPanel p = new JPanel(new BorderLayout());
@@ -46,22 +52,29 @@ public class UnlockerApplication extends JFrame {
 		p.add(initChipTableArea(), BorderLayout.CENTER);
 		p.add(initResponseArea(), BorderLayout.SOUTH);
 		getContentPane().add(p);
-		pack();
+		setSize(1200, 600);
 	}
 
 	private Component initControlPanel() {
 		JPanel p = new JPanel();
 		
 		p.add(initFirstColor());
+		p.add(initChipBoard());
 		p.add(initLastColor());
 		p.add(initUnlockControl());
 		return p;
 	}
-	
+
 	private Component initFirstColor() {
 		firstColor = new RoundColorComboBox(ChipColor.colors());
 		firstColor.setName(FIRST_COLOR_NAME);
 		return firstColor;
+	}
+	
+	private Component initChipBoard() {
+		chipBoard = new ChipBoard(chips);
+		chipBoard.setName(CHIP_BOARD_NAME);
+		return chipBoard;
 	}
 	
 	private Component initLastColor() {
@@ -90,17 +103,27 @@ public class UnlockerApplication extends JFrame {
 	}
 
 
-
-
 	private Component initChipTable() {
-		table = new ChipTable();
+		table = new ChipTable(chips);
 		table.setName(CHIP_TABLE_NAME);
-		
+		table.addChangeListener(createTableListener());
 		
 		return new JScrollPane(table.getComponent());
 	}
 
-
+	private TableModelListener createTableListener() {
+		return new TableModelListener() {
+			
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				updateBoard();
+			}
+		};
+	}
+	
+	private void updateBoard() {
+		chipBoard.updateView();
+	}
 
 	private Component initChipButtons() {
 		Box b = Box.createVerticalBox();
@@ -109,20 +132,21 @@ public class UnlockerApplication extends JFrame {
 		return b;
 	}
 
-
-
 	private Component initAddButton() {
 		JButton addButton = new JButton("Add");
 		addButton.setName(ADD_CHIP_NAME);
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				table.addChip();
+				addChip();
 			}
 		});
 		return addButton;
 	}
-
-
+	
+	private void addChip() {
+		table.addChip();
+		updateBoard();
+	}
 
 	private Component initResponseArea() {
 		responseArea = new JTextArea();
@@ -130,21 +154,19 @@ public class UnlockerApplication extends JFrame {
 		return responseArea;
 	}
 
-	
-
 	private void performUnlock() {
 		Unlocker unlock = new Unlocker();
 		unlock.unlock(createInput());
-		responseArea.setText(String.valueOf(unlock.getResult()));
+		responseArea.setText(unlock.getResultAsString());
+		chips.reorder(unlock.getOrderedChips());
+		chipBoard.updateView();
 	}
-
-
 
 	private UnlockerInput createInput() {
 		UnlockerInput input = new UnlockerInput();		
 		input.setFirstColor(getFirstChipColor());
 		input.setLastColor(getLastChipColor());
-		input.setChips(table.getChips());
+		input.setChips(chips.getChips());
 		return input;
 	}
 
@@ -165,7 +187,7 @@ public class UnlockerApplication extends JFrame {
 		      public void run() {
 		         new UnlockerApplication();
 		      }
-		    });
+	    });
 	}
 
 }

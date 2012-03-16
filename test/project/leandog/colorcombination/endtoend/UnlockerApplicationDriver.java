@@ -1,16 +1,17 @@
 package project.leandog.colorcombination.endtoend;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.*;
 
 import java.awt.Color;
 import java.util.Arrays;
 
 import javax.swing.*;
 
-import project.leandog.colorcombination.ui.ChipColor;
-import project.leandog.colorcombination.ui.UnlockerApplication;
+import project.leandog.colorcombination.ui.*;
 
 import com.objogate.wl.swing.AWTEventQueueProber;
+import com.objogate.wl.swing.ComponentSelector;
 import com.objogate.wl.swing.driver.*;
 import com.objogate.wl.swing.gesture.GesturePerformer;
 
@@ -64,6 +65,13 @@ public class UnlockerApplicationDriver extends JFrameDriver {
 		table.component().component().setValueAt(c1, rowIndex, 0);
 		table.editCell(rowIndex, 1);
 		table.component().component().setValueAt(c2, rowIndex, 1);
+	}
+
+	public void showsChipSequence(Color... chipColors) {
+		 ComponentSelector<ChipBoard> selector = new JComponentDriver<ChipBoard>(this, ChipBoard.class, named(UnlockerApplication.CHIP_BOARD_NAME)).component();
+		 selector.probe();
+		 ChipBoard board = selector.component();
+		assertEquals(Arrays.asList(chipColors), Arrays.asList(board.getColors()));
 	}
 
 	

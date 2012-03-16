@@ -51,51 +51,25 @@ public class UnlockerEndToEndTest {
 		application.showsUnlockSuccess(BLUE, RED);
 	}
 	
-	@Test public void exampleOne(){
-		application.setEndColors(BLUE, GREEN);
-		application.addChips(BLUE, YELLOW,
-				RED, ORANGE,
-				RED, GREEN,
-				YELLOW, RED,
-				ORANGE, PURPLE);
-		
-		application.unlock();
-		application.showsUnlockFailed();
-	}
-	
-	@Test public void exampleTwo() {
-		application.setEndColors(BLUE, GREEN);
-		application.addChips(
-				BLUE, YELLOW,
-				ORANGE, RED,
-				RED, GREEN,
-				YELLOW, RED,
-				ORANGE, RED);
-		
-		application.unlock();
-		application.showsUnlockSuccess(
-				BLUE, YELLOW,
-				YELLOW, RED,
-				RED, ORANGE,
-				ORANGE, RED,
-				RED, GREEN);
-	}
-	
-	@Test public void example3(){
+	@Test public void addChipAddsToBoard(){
 		application.setEndColors(BLUE, RED);
-		application.addChips(
-				RED, BLUE,
-				ORANGE, RED,
-				GREEN, GREEN,
-				ORANGE, YELLOW,
-				RED, YELLOW
-				);
-		
-		application.unlock();
-		application.showsUnlockFailed();
+		application.addChip(0, RED, BLUE);
+		application.showsChipSequence(RED, BLUE);
 	}
 	
+	@Test public void boardShowsUnlock(){
+		application.setEndColors(BLUE, RED);
+		application.addChip(0, RED, BLUE);
+		application.unlock();
+		sleep(5);
+		application.showsChipSequence(BLUE, RED);
+	}
+
 	
+	private void sleep(int i) {
+		try { Thread.sleep(i); } catch (InterruptedException e) {}
+	}
+
 	@Before public void startApplicaton() {
 		application.start();
 	}

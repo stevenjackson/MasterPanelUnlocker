@@ -45,6 +45,7 @@ public class Unlocker {
 	}
 	
 	private boolean fail() {
+		orderedResults.clear();
 		result = UNLOCK_FAILED_MESSAGE;
 		return false;
 	}
@@ -66,7 +67,7 @@ public class Unlocker {
 	}
 	
 	private boolean completesPath(Chip prevChip, Chip nextChip, List<Chip> remainingChips){
-		return prevChip.matches(nextChip) && completesPath(nextChip, remainingChips);
+		return prevChip.precedes(nextChip) && completesPath(nextChip, remainingChips);
 	}
 	
 	private boolean completesPath(Chip nextChip, List<Chip> remainingChips){
@@ -95,8 +96,12 @@ public class Unlocker {
 		result =  sb.toString().trim();
 	}
 
-	public Object getResult() {
+	public String getResultAsString() {
 		return result;
+	}
+	
+	public Chip[] getOrderedChips() {
+		return orderedResults.toArray(new Chip[0]);
 	}
 
 }

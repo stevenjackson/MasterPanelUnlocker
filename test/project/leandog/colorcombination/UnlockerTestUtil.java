@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 public class UnlockerTestUtil {
 
 	public static void assertUnlockFailed(Unlocker unlocker){
-		assertEquals(Unlocker.UNLOCK_FAILED_MESSAGE, unlocker.getResult());
+		assertEquals(Unlocker.UNLOCK_FAILED_MESSAGE, unlocker.getResultAsString());
 	}
 	
 	public static UnlockerInput buildInput(String... colors) {

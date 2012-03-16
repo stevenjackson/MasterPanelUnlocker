@@ -15,7 +15,11 @@ import project.leandog.colorcombination.Chip;
 @SuppressWarnings("serial")
 public class ChipTableModel extends AbstractTableModel {
 	
-	private List<ChipModel> chips = new ArrayList<ChipModel>();
+	private ChipsModel chips;
+	
+	public ChipTableModel(ChipsModel chips){
+		this.chips = chips;
+	}
 
 	//Show the two chip colors then a string for the Chip's owner
 	private String[] COLUMNS = new String[] {
@@ -69,6 +73,7 @@ public class ChipTableModel extends AbstractTableModel {
        } else if(columnIndex == 2){
     	   chip.setOwner(String.valueOf(value));
        }
+	   fireTableCellUpdated(rowIndex, columnIndex);
 	}
 	
 	private ChipColor color(Object value){
@@ -91,9 +96,11 @@ public class ChipTableModel extends AbstractTableModel {
 		return true;
 	}
 
-	public void addChip(){
-		chips.add(new ChipModel());
+	public ChipModel addChip(){
+		ChipModel chipModel = new ChipModel();
+		chips.add(chipModel);
 		fireTableRowsInserted(chips.size() - 1, chips.size() - 1);
+		return chipModel;
 	}
 
 	public List<Chip> chips() {

@@ -26,7 +26,7 @@ public class UnlockerTest {
 		String expected = buildPairs("red", "green");
 		
 		unlocker.unlock(input);
-		assertEquals(expected, unlocker.getResult());
+		assertEquals(expected, unlocker.getResultAsString());
 	}
 	
 	
@@ -35,7 +35,7 @@ public class UnlockerTest {
 		String expected = buildPairs("red", "green");
 		
 		unlocker.unlock(input);
-		assertEquals(expected, unlocker.getResult());
+		assertEquals(expected, unlocker.getResultAsString());
 	}
 	
 	@Test public void testTwoChips(){
@@ -43,7 +43,7 @@ public class UnlockerTest {
 		String expected = buildPairs("red", "red", "red", "green");
 		
 		unlocker.unlock(input);
-		assertEquals(expected, unlocker.getResult());
+		assertEquals(expected, unlocker.getResultAsString());
 	}
 	
 	@Test public void exampleOne(){
@@ -76,7 +76,7 @@ public class UnlockerTest {
 				"red", "green");
 		
 		unlocker.unlock(input);
-		assertEquals(expected, unlocker.getResult());
+		assertEquals(expected, unlocker.getResultAsString());
 	}
 	
 	@Test public void example3(){

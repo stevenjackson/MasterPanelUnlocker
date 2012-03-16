@@ -81,4 +81,8 @@ public class ApplicationRunner {
 			addChip(rowIndex++, colors[colorIndex++], colors[colorIndex++]);
 		}
 	}
+
+	public void showsChipSequence(Color... chipColors) {
+		driver.showsChipSequence(chipColors);
+	}
 }
